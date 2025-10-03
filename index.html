@@ -45,7 +45,7 @@
     margin-bottom: 0.2rem;
   }
 
-  input[type="number"] {
+  input[type="number"], input[type="range"] {
     padding: 0.3rem;
     font-size: 1rem;
     border-radius: 4px;
@@ -92,22 +92,18 @@
     position: absolute;
     box-shadow: 0 0 6px rgba(255,255,255,0.8);
   }
-  .peg.red {
-    background: #e74c3c;
-    box-shadow: 0 0 8px #e74c3c;
-  }
 
   /* Slots at bottom */
   #slots {
     position: absolute;
     bottom: 10px;
-    left: 20px;
-    right: 20px;
+    left: 45px; /* closer to center */
+    right: 45px;
     display: flex;
     justify-content: space-between;
   }
   .slot {
-    width: 40px;
+    width: 30px; /* narrower for closer spacing */
     height: 60px;
     background: #333;
     border-radius: 8px;
@@ -120,21 +116,26 @@
     user-select: none;
     box-shadow: 0 0 8px #444 inset;
     transition: background 0.3s;
+    margin: 0 2px; /* small margin for spacing */
   }
   .slot:hover {
     background: #555;
-  }
-  .slot.red {
-    background: #e74c3c;
-    box-shadow: 0 0 10px #e74c3c inset;
   }
   .slot.orange {
     background: #f39c12;
     box-shadow: 0 0 10px #f39c12 inset;
   }
+  .slot.green {
+    background: #2ecc71;
+    box-shadow: 0 0 10px #2ecc71 inset;
+  }
+  .slot.gray {
+    background: #555;
+    box-shadow: 0 0 10px #555 inset;
+  }
 
   /* Ball */
-  #ball {
+  .ball {
     width: 18px;
     height: 18px;
     border-radius: 50%;
@@ -199,6 +200,8 @@
 
   // Multipliers for slots (7 slots)
   const slotMultipliers = [0, 0.2, 0.2, 2, 0.2, 0.2, 0];
+  const slotLabels = ['0x', '0.2x', '0.2x', '2x', '0.2x', '0.2x', '0x'];
+  const slotColors = ['gray', 'orange', 'orange', 'green', 'orange', 'orange', 'gray'];
 
   function updateBalance() {
     balanceEl.textContent = `Balance: $${balance.toFixed(2)}`;
@@ -230,14 +233,10 @@
   // Draw slots at bottom
   function drawSlots(){
     slotsContainer.innerHTML = '';
-    const slotNames = ['0x', '0.2x', '0.2x', '2x', '0.2x', '0.2x', '0x'];
-    const colors = ['#555', '#f39c12', '#f39c12', '#2ecc71', '#f39c12', '#f39c12', '#555'];
-
     for(let i = 0; i < slotMultipliers.length; i++){
       const slot = document.createElement('div');
-      slot.classList.add('slot');
-      slot.textContent = slotNames[i];
-      slot.style.backgroundColor = colors[i];
+      slot.classList.add('slot', slotColors[i]);
+      slot.textContent = slotLabels[i];
       slotsContainer.appendChild(slot);
     }
   }
@@ -259,6 +258,59 @@
     return position;
   }
 
+  // Animate balls dropping visually
+  function animateBallDrop(ball, pathPositions, callback) {
+    let i = 0;
+
+    function step() {
+      if(i < pathPositions.length){
+        ball.style.top = pathPositions[i].top + 'px';
+        ball.style.left = pathPositions[i].left + 'px';
+        i++;
+        requestAnimationFrame(step);
+      } else {
+        callback();
+      }
+    }
+    step();
+  }
+
+  // Calculate the ball's path visually through the pegs
+  function calculatePath(slotIndex) {
+    const pegSpacingX = 50;
+    const pegSpacingY = 45;
+    const boardWidth = 400;
+
+    let path = [];
+    let pos = Math.floor(rows / 2);
+
+    for(let r = 0; r < rows; r++){
+      const numPegs = r + 1;
+      const offsetX = (boardWidth - pegSpacingX * numPegs) / 2;
+      let x;
+
+      if(r === rows - 1){
+        // Final position depends on slotIndex
+        x = offsetX + slotIndex * pegSpacingX - pegSpacingX / 2;
+      } else {
+        x = offsetX + pos * pegSpacingX;
+      }
+      let y = r * pegSpacingY + 15; // small offset for ball size
+      path.push({top: y, left: x});
+
+      // Simulate ball moving left/right with center bias
+      if(r < rows - 1){
+        if(pos <= 0) pos++;
+        else if(pos >= rows - 1) pos--;
+        else {
+          const moveLeftProb = centerBias / 100;
+          pos += Math.random() < moveLeftProb ? -1 : 1;
+        }
+      }
+    }
+    return path;
+  }
+
   function placeBet(){
     betAmount = parseFloat(betAmountInput.value);
     if(betAmount <= 0 || betAmount > balance){
@@ -270,17 +322,33 @@
     updateBalance();
 
     let totalWin = 0;
-    for(let i=0; i < ballsAtOnce; i++){
+    let ballsDropped = 0;
+
+    function dropNextBall(){
+      if(ballsDropped >= ballsAtOnce){
+        balance += totalWin;
+        updateBalance();
+        alert(`Du vandt $${totalWin.toFixed(2)} på denne runde!`);
+        return;
+      }
+
       const slotIndex = simulateDrop();
       const multiplier = slotMultipliers[slotIndex] || 0;
       totalWin += betAmount * multiplier;
+
+      const ball = document.createElement('div');
+      ball.classList.add('ball');
+      board.appendChild(ball);
+
+      const path = calculatePath(slotIndex);
+      animateBallDrop(ball, path, () => {
+        ball.remove();
+        ballsDropped++;
+        dropNextBall();
+      });
     }
 
-    setTimeout(() => {
-      balance += totalWin;
-      updateBalance();
-      alert(`Du vandt $${totalWin.toFixed(2)} på denne runde!`);
-    }, 500);
+    dropNextBall();
   }
 
   // Event listeners
