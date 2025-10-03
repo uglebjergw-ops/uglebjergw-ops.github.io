@@ -1,98 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Donation + Ads Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gratis Plinko Spil - Start med 1$</title>
 
-  <!-- Load Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6823920019858078"
+  <!-- Google AdSense Auto Ads -->
+  <script async
+     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2796462510330810"
      crossorigin="anonymous"></script>
 
   <style>
     body {
       font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 1rem;
+      background: #f9f9f9;
       text-align: center;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
     }
-    header {
-      background: #333;
+    h1 {
+      margin-top: 1rem;
+    }
+    #consentBanner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #222;
       color: white;
       padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      align-items: center;
+      font-size: 1rem;
+      z-index: 1000;
     }
-    .content {
-      margin: 2rem;
-    }
-    .donate {
-      margin-top: 1.5rem;
-    }
-    .plink {
-      margin: 2rem;
-      font-size: 20px;
+    #consentBanner button {
+      background: #4caf50;
+      border: none;
+      padding: 0.5rem 1rem;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
       font-weight: bold;
     }
-    a {
-      color: #0077cc;
-      text-decoration: none;
+    #consentBanner button.decline {
+      background: #f44336;
+    }
+    #gameArea {
+      margin-top: 2rem;
+    }
+    #balance {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #plinkoBoard {
+      margin: auto;
+      max-width: 400px;
+      display: grid;
+      grid-template-columns: repeat(7, 40px);
+      gap: 5px;
+      justify-content: center;
+    }
+    .peg {
+      width: 30px;
+      height: 30px;
+      background: #666;
+      border-radius: 50%;
+      margin: auto;
+    }
+    .slot {
+      width: 40px;
+      height: 60px;
+      border: 2px solid #444;
+      border-radius: 8px;
+      position: relative;
+      background: #eee;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      font-weight: bold;
+      font-size: 1rem;
+      padding-bottom: 5px;
+    }
+    #message {
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+      min-height: 2rem;
+    }
+    #startButton {
+      margin-top: 1rem;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      background: #2196f3;
+      color: white;
+      border: none;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Welcome to My Site</h1>
-  </header>
+  <h1>Gratis Plinko Spil</h1>
+  <p>Start med 1$ og prøv at vinde flere penge!</p>
 
-  <!-- Top Ad -->
-  <ins class="adsbygoogle"
-       style="display:block; text-align:center;"
-       data-ad-client="ca-pub-6823920019858078"
-       data-ad-slot="1234567890"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-
-  <div class="content">
-    <p>Thanks for visiting! You can support me below 👇</p>
-    
-    <!-- PayPal Donate Button -->
-    <div class="donate">
-      <form action="https://www.paypal.com/donate" method="post" target="_blank">
-        <!-- Replace with your own PayPal business email -->
-        <input type="hidden" name="business" value="YOUR-PAYPAL-EMAIL@example.com">
-        <input type="hidden" name="currency_code" value="USD">
-        <input type="image" 
-               src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
-               border="0" 
-               name="submit" 
-               title="Donate with PayPal" 
-               alt="Donate with PayPal button">
-        <img alt="" border="0" 
-             src="https://www.paypal.com/en_US/i/scr/pixel.gif" 
-             width="1" height="1">
-      </form>
-    </div>
-
-    <!-- Main Free Link -->
-    <div class="plink">
-      <a href="https://example.com" target="_blank">✨ Click Here for the Free Link ✨</a>
-    </div>
+  <!-- Consent Banner -->
+  <div id="consentBanner">
+    <div>Vi bruger cookies til annoncer og analyse. Accepter?</div>
+    <button id="acceptBtn">Accepter</button>
+    <button id="declineBtn" class="decline">Afvis</button>
   </div>
 
-  <!-- Bottom Ad -->
-  <ins class="adsbygoogle"
-       style="display:block; text-align:center;"
-       data-ad-client="ca-pub-6823920019858078"
-       data-ad-slot="9876543210"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
+  <!-- Game Area -->
+  <div id="gameArea" style="display:none;">
+    <div id="balance">Saldo: $1.00</div>
 
+    <div id="plinkoBoard">
+      <!-- Pegs -->
+      <!-- We'll create 4 rows of pegs in staggered formation -->
+      <div class="peg" style="grid-column:2"></div>
+      <div class="peg" style="grid-column:4"></div>
+      <div class="peg" style="grid-column:6"></div>
+
+      <div class="peg" style="grid-column:1"></div>
+      <div class="peg" style="grid-column:3"></div>
+      <div class="peg" style="grid-column:5"></div>
+      <div class="peg" style="grid-column:7"></div>
+
+      <div class="peg" style="grid-column:2"></div>
+      <div class="peg" style="grid-column:4"></div>
+      <div class="peg" style="grid-column:6"></div>
+
+      <div class="peg" style="grid-column:1"></div>
+      <div class="peg" style="grid-column:3"></div>
+      <div class="peg" style="grid-column:5"></div>
+      <div class="peg" style="grid-column:7"></div>
+
+      <!-- Slots (where the ball lands) -->
+      <div class="slot" data-multiplier="0" style="grid-column:1">$0</div>
+      <div class="slot" data-multiplier="0.5" style="grid-column:2">$0.5</div>
+      <div class="slot" data-multiplier="1" style="grid-column:3">$1</div>
+      <div class="slot" data-multiplier="2" style="grid-column:4">$2</div>
+      <div class="slot" data-multiplier="5" style="grid-column:5">$5</div>
+      <div class="slot" data-multiplier="10" style="grid-column:6">$10</div>
+      <div class="slot" data-multiplier="0" style="grid-column:7">$0</div>
+    </div>
+
+    <button id="startButton">Drop Kugle</button>
+
+    <div id="message"></div>
+  </div>
+
+<script>
+  // Consent banner logic
+  const consentBanner = document.getElementById('consentBanner');
+  const acceptBtn = document.getElementById('acceptBtn');
+  const declineBtn = document.getElementById('declineBtn');
+  const gameArea = document.getElementById('gameArea');
+
+  // Check if user already consented or declined
+  if(localStorage.getItem('cookieConsent') === 'accepted'){
+    consentBanner.style.display = 'none';
+    gameArea.style.display = 'block';
+  }
+  else if(localStorage.getItem('cookieConsent') === 'declined'){
+    consentBanner.style.display = 'none';
+    gameArea.style.display = 'block';  // You can also hide game if you want
+  }
+
+  acceptBtn.onclick = () => {
+    localStorage.setItem('cookieConsent', 'accepted');
+    consentBanner.style.display = 'none';
+    gameArea.style.display = 'block';
+  }
+
+  declineBtn.onclick = () => {
+    localStorage.setItem('cookieConsent', 'declined');
+    consentBanner.style.display = 'none';
+    gameArea.style.display = 'block';  // Change if you want to block game
+  }
+
+  // Plinko game logic
+  const balanceEl = document.getElementById('balance');
+  const startButton = document.getElementById('startButton');
+  const messageEl = document.getElementById('message');
+
+  let balance = 1.0; // Start with $1
+
+  function updateBalance() {
+    balanceEl.textContent = 'Saldo: $' + balance.toFixed(2);
+  }
+
+  // Simple simulation of ball drop with weighted random walk
+  // The ball starts at center (slot 4) and moves left/right randomly 6 times
+  function dropBall() {
+    startButton.disabled = true;
+    messageEl.textContent = 'Kuglen falder...';
+
+    let position = 3; // zero-based index (slots 0-6), start roughly center slot 4 (index 3)
+    const steps = 6;
+
+    for(let i=0; i<steps; i++){
+      // Random move left (-1) or right (+1)
+      // If at edges, must move inward
+      if(position === 0) position++;
+      else if(position === 6) position--;
+      else position += Math.random() < 0.5 ? -1 : 1;
+    }
+
+    setTimeout(() => {
+      // Slots multipliers from HTML elements
+      const slots = document.querySelectorAll('.slot');
+      const multiplier = parseFloat(slots[position].getAttribute('data-multiplier')) || 0;
+      const winAmount = balance * multiplier;
+
+      if(multiplier === 0){
+        messageEl.textContent = `Åh nej! Du tabte alt. Saldo nulstillet til $1.00`;
+        balance = 1.0;
+      } else {
+        messageEl.textContent = `Tillykke! Du vandt $${winAmount.toFixed(2)} (x${multiplier})`;
+        balance = winAmount;
+      }
+
+      updateBalance();
+      startButton.disabled = false;
+    }, 1500);
+  }
+
+  startButton.addEventListener('click', dropBall);
+  updateBalance();
+
+</script>
 </body>
 </html>
