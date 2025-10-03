@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Donation + Ads Website</title>
+
+  <!-- Load Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6823920019858078"
+     crossorigin="anonymous"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -23,20 +28,6 @@
     .donate {
       margin-top: 1.5rem;
     }
-    iframe {
-      border: none;
-    }
-    .ad {
-      margin: 2rem auto;
-      width: 320px;
-      height: 100px;
-      background: #ddd; /* Placeholder for ad */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: #555;
-    }
     .plink {
       margin: 2rem;
       font-size: 20px;
@@ -55,19 +46,35 @@
   </header>
 
   <!-- Top Ad -->
-  <div class="ad">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6823920019858078"
-     crossorigin="anonymous"></script>
-  </div>
+  <ins class="adsbygoogle"
+       style="display:block; text-align:center;"
+       data-ad-client="ca-pub-6823920019858078"
+       data-ad-slot="1234567890"   <!-- Replace with your real Ad Unit ID -->
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
   <div class="content">
     <p>Thanks for visiting! You can support me below 👇</p>
     
-    <!-- Donation Button -->
+    <!-- PayPal Donate Button -->
     <div class="donate">
-      <a href="https://www.buymeacoffee.com/YOURNAME" target="_blank">
-        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="200">
-      </a>
+      <form action="https://www.paypal.com/donate" method="post" target="_blank">
+        <!-- Replace with your own PayPal business email -->
+        <input type="hidden" name="business" value="YOUR-PAYPAL-EMAIL@example.com">
+        <input type="hidden" name="currency_code" value="USD">
+        <input type="image" 
+               src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" 
+               border="0" 
+               name="submit" 
+               title="Donate with PayPal" 
+               alt="Donate with PayPal button">
+        <img alt="" border="0" 
+             src="https://www.paypal.com/en_US/i/scr/pixel.gif" 
+             width="1" height="1">
+      </form>
     </div>
 
     <!-- Main Free Link -->
@@ -77,9 +84,15 @@
   </div>
 
   <!-- Bottom Ad -->
-  <div class="ad">
-    Your Ad Here
-  </div>
+  <ins class="adsbygoogle"
+       style="display:block; text-align:center;"
+       data-ad-client="ca-pub-6823920019858078"
+       data-ad-slot="9876543210"   <!-- Replace with another Ad Unit ID -->
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
 </body>
 </html>
